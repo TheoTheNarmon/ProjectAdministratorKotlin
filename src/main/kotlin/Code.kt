@@ -1,34 +1,46 @@
-class Project(val tareas: MutableSet<Task> = mutableSetOf()) {
+class Project(val tasks: MutableSet<Task> = mutableSetOf()): percentage {
+    fun completed(): Double {
+        if(tasks.size == 0){
+            return 0.0
+        }
+        else {
+            return average(
+                this.tasks.size.toDouble(),
+                this.tasks.filter { task -> task.filled() == 100.0 }.size.toDouble()
+            )
+        }
+    }
+
+
 
 }
 class Tax(val tax: Double){
     fun tax() = this.tax
 }
 
+interface percentage{
+    fun average(x:Double,y:Double): Double{
+        return (y*100)/x
+    }
+}
 
 interface exercise{
     val time: Double
     val complexity: Int
     fun complete()
     fun price(): Double {
-        if (complexity == 1){
-            return time*25
-        }
-        else if (complexity == 2){
-            return time*25 + percentage(time*25,5.0)
-        }
-        else{
-            if (time >= 10){
-                return time*25 + percentage(time*25,7.0)
-            }
-            else{
-                return time*25 + percentage(time*25,7.0) + 10*(time-10)
+        if (complexity == 1) {
+            return time * 25
+        } else if (complexity == 2) {
+            return time * 25 + percentage(time * 25, 5.0)
+        } else {
+            if (time <= 10) {
+                return time * 25 + percentage(time * 25, 7.0)
+            } else {
+                return time * 25 + percentage(time * 25, 7.0) + 10 * (time - 10)
             }
         }
 
-    }
-    fun percentage(x:Double,y:Double): Double{
-        return (x*y)/100
     }
 
     fun delay(): Int{
@@ -42,6 +54,10 @@ interface exercise{
             return percentage(time,20.0).toInt() + 8
         }
     }
+
+    fun percentage(x:Double,y:Double): Double{
+        return (x*y)/100
+    }
 }
 
 class Task(
@@ -49,7 +65,7 @@ class Task(
     override val time: Double,
     override val complexity: Int,
     val taxes: MutableSet<Tax> = mutableSetOf()
-    ): exercise{
+    ): exercise, percentage{
     var filled: Double = 0.0
     fun filled() = this.filled
 
@@ -63,22 +79,13 @@ class Task(
     fun taxes(): Double {
         return taxes.sumOf {tax -> tax.tax()}
     }
-    fun all(): Int{
-        var i = 0
-        for (item in subtasks){
-            if (item.filled() == true){
-                i = i + 1
-            }
-        }
-        return i
-    }
 
     override fun complete(){
         if (subtasks.isEmpty()){
             filled = 100.0
         }
         else{
-            filled = percentage(
+            filled = average(
                 (this.subtasks.size + 1).toDouble(),
                 (this.subtasks.filter{ subtask -> subtask.filled() }.size + 1).toDouble()
             )
@@ -86,7 +93,7 @@ class Task(
     }
 }
 
-class Subtask(override val time: Double, override val complexity: Int) : exercise{
+class Subtask(override val time: Double, override val complexity: Int) : exercise, percentage{
     var filled = false
     fun filled() = this.filled
 
