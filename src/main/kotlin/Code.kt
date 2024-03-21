@@ -26,34 +26,11 @@ interface percentage{
 
 interface exercise{
     val time: Double
-    val complexity: Int
+    val complexity: Complexity
     fun complete()
-    fun price(): Double {
-        if (complexity == 1) {
-            return time * 25
-        } else if (complexity == 2) {
-            return time * 25 + percentage(time * 25, 5.0)
-        } else {
-            if (time <= 10) {
-                return time * 25 + percentage(time * 25, 7.0)
-            } else {
-                return time * 25 + percentage(time * 25, 7.0) + 10 * (time - 10)
-            }
-        }
+    fun price(): Double = complexity.price(this)
 
-    }
-
-    fun delay(): Int{
-        if(complexity == 1){
-            return 5
-        }
-        else if (complexity == 2){
-            return percentage(time,10.0).toInt()
-        }
-        else{
-            return percentage(time,20.0).toInt() + 8
-        }
-    }
+    fun delay(): Int = complexity.delay(this)
 
     fun percentage(x:Double,y:Double): Double{
         return (x*y)/100
@@ -63,7 +40,7 @@ interface exercise{
 class Task(
     val subtasks: MutableSet<Subtask> = mutableSetOf(),
     override val time: Double,
-    override val complexity: Int,
+    override val complexity: Complexity,
     val taxes: MutableSet<Tax> = mutableSetOf()
     ): exercise, percentage{
     var filled: Double = 0.0
@@ -93,7 +70,7 @@ class Task(
     }
 }
 
-class Subtask(override val time: Double, override val complexity: Int) : exercise, percentage{
+class Subtask(override val time: Double, override val complexity: Complexity) : exercise, percentage{
     var filled = false
     fun filled() = this.filled
 

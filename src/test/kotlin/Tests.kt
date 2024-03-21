@@ -2,28 +2,28 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 
 class Projects: DescribeSpec ({
-    val subTaskOne = Subtask(time = 8.0,complexity = 1)
-    val subTaskTwo = Subtask(time = 5.0, complexity = 2)
-    val subTaskTree = Subtask(time = 7.0, complexity = 3)
-    val subTaskFour = Subtask(time = 4.0, complexity = 2)
+    val subTaskOne = Subtask(time = 8.0,complexity = Complexity.lOW)
+    val subTaskTwo = Subtask(time = 5.0, complexity = Complexity.MEDIUM)
+    val subTaskTree = Subtask(time = 7.0, complexity = Complexity.HIGH)
+    val subTaskFour = Subtask(time = 4.0, complexity = Complexity.MEDIUM)
     val taxA = Tax(tax = 3.0)
     val taxB = Tax(tax = 5.0)
     val taskOne = Task(
         subtasks = mutableSetOf(),
         time = 30.0,
-        complexity = 3,
+        complexity = Complexity.HIGH,
         taxes = mutableSetOf(taxB)
     )
     val taskTwo = Task(
         subtasks = mutableSetOf(subTaskOne,subTaskTwo),
         time = 15.0,
-        complexity = 1,
+        complexity = Complexity.LOW,
         taxes = mutableSetOf(taxA,taxB)
     )
     val taskTree = Task(
         subtasks = mutableSetOf(subTaskOne,subTaskTwo,subTaskTree,subTaskFour),
         time = 25.0,
-        complexity = 2,
+        complexity = Complexity.MEDIUM,
         taxes = mutableSetOf()
     )
     val project = Project(tasks = mutableSetOf(taskOne,taskTwo,taskTree))
